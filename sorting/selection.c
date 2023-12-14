@@ -1,66 +1,39 @@
 #include<stdio.h>
+// #include<conio.h>
+void selection(int a[] ,int n ){
+int i , j , small , index;
+for(i = 0 ; i < n-1 ; i++){
 
+small = a[i];
+index = i ;
 
-void  SelectionSort(int a[], int n){
-    int i,j,k;
-    int temp=0;
-    for(i=0;i<n-1;i++){
-        for(j=k=i;j<n;j++){
-            if(a[j]<a[k]){
-                k=j;
-            }
-        }  
-        temp=a[i];
-        a[i]=a[k];
-        a[k]=temp;
-    }
-    printf("After sorting: ");
-    for (i = 0; i < n; i++) {
-        printf("%d ", a[i]);
-    }
+for(j = i +1 ; j< n ; j++){
+if(a[j] < small){
+small = a[j];
+index = j;
+}
 }
 
+a[index] = a[i];
+a[i] = small;
+}
+}
+int main(){
+int i =0 ;
+int arr[100] = {4,3,2,1};
 
-int main() {
-    int a[1000];
-    int n;
+// clrscr();
 
-    printf("Enter number of components: ");
-    scanf("%d", &n);
 
-    for (int i = 0; i < n; i++) {
-        printf("Enter element: ");
-        scanf("%d", &a[i]);
-    }
+selection(arr,4);
+for(i = 0 ; i < 4 ;i++){
+printf("%d " ,arr[i]);
+// getch();
+}
+return 0;
 
-    SelectionSort(a, n);
 
-    return 0;
+
+
 }
 
-
-/*
-void swap(int* x, int* y) {
-    int temp = *x;
-    *x = *y;
-    *y = temp;
-}
-
-void  SelectionSort(int a[], int n){
-    int i,j,k;
-    int temp=0;
-    for(i=0;i<n-1;i++){
-        for(j=k=i;j<n;j++){
-            if(a[j]<a[k]){
-                k=j;
-            }
-        }  
-        swap(&a[i],&a[k]);
-    }
-    printf("After sorting: ");
-    for (i = 0; i < n; i++) {
-        printf("%d ", a[i]);
-    }
-}
-
-*/
