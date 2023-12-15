@@ -37,32 +37,35 @@ struct Node* findMin(struct Node* node) {
  return node;
 }
 // Function to delete a value from the BST
-struct Node* deleteNode(struct Node* root, int value) {
- if (root == NULL) {
- return root;
- }
- if (value < root->data) {
- root->left = deleteNode(root->left, value);
- } else if (value > root->data) {
- root->right = deleteNode(root->right, value);
- } else {
- // Node with only one child or no child
- if (root->left == NULL) {
- struct Node* temp = root->right;
- free(root);
- return temp;
- } else if (root->right == NULL) {
- struct Node* temp = root->left;
- free(root);
- return temp;
- }
- // Node with two children: Get the inorder successor (smallest
- // in the right subtree) and replace the current node's data
- root->data = findMin(root->right)->data;
- // Delete the inorder successor
- root->right = deleteNode(root->right, root->data);
- }
- return root;
+struct Node *deleteNode(struct Node *root, int value){
+    if(root==NULL){
+        return root;
+    }
+
+    if(value < root->data){
+        root->left=deleteNode(root->left,value);
+        return root;
+    }
+    else if(value > root->data){
+        root->right=deleteNode(root->right,value);
+        return root;
+    }
+    else{
+        if(root->left ==NULL){
+            struct Node *temp=root->right;
+            free(root);
+            return temp;
+        }
+        else if(root->right==NULL){
+            struct Node *temp=root->left;
+            free(root);
+            return temp;
+        }
+        struct Node *temp=findMin(root->right);
+        root->data=temp->data;
+        root->right=deleteNode(root->right,temp->data);
+    }
+    return root;
 }
 // Function to search for a value in the BST
 struct Node* search(struct Node* root, int value) {
