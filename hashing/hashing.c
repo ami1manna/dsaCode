@@ -76,7 +76,32 @@ printf("\n");
 }
 
 }
+void deleteKey(int key) {
+    int i = hashCode(key);
+    struct Node* current = hashTable[i];
+    struct Node* prev = NULL;
 
+    while (current != NULL && current->data != key) {
+        prev = current;
+        current = current->next;
+    }
+
+    if (current == NULL) {
+        printf("Key %d not found in the hash table\n", key);
+        return;
+    }
+
+    if (prev == NULL) {
+        // Deleting the first node
+        hashTable[i] = current->next;
+    } else {
+        // Deleting a node that is not the first one
+        prev->next = current->next;
+    }
+
+    free(current);
+    printf("Key %d deleted from the hash table\n", key);
+}
 
 int main() {
   insitializeHashTable();
@@ -88,7 +113,7 @@ int main() {
         printf("1. Insert\n");
         printf("2. Search\n");
         printf("3. Display Hash Table\n");
-        printf("0. Exit\n");
+        printf("4. delete\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -112,8 +137,15 @@ int main() {
             case 3:
                 displayHashTable();
                 break;
+              
+                case 4:
+                printf("Enter the key to delete: ");
+              scanf("%d", &key);
+           deleteKey(key);
+                break;
 
-            case 0:
+
+            case 5:
                 printf("Exiting program.\n");
                 break;
 
@@ -121,7 +153,7 @@ int main() {
                 printf("Invalid choice! Please enter a valid option.\n");
         }
 
-    } while (choice != 0);
+    } while (choice != 5);
 
     return 0;
 }
