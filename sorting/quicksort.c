@@ -1,79 +1,68 @@
-#include <stdio.h>
+#include<stdio.h>
+#include<conio.h>
 
-void swap(int *x, int *y) {
-    int temp = *x;
-    *x = *y;
-    *y = temp;
-}
+void swap(int *x, int *y);
+int partition(int[] , int , int );
+void quicksort(int[] , int , int);
 
-int Partition(int a[], int l, int h) {
-    int pivot = a[l];
-    int i = l;
-    int j = h;
+void main(){
+  int a[1000];
+ int n,i ;
+ scanf("%d",&n);
+ for(i = 0 ; i <n ; i++){
+scanf("%d",&a[i]);
 
-    do {
-        do {
-            i++;
-        } while (a[i] <= pivot);
 
-        do {
-            j--;
-        } while (a[j] > pivot);
+ }
+quicksort(a,0 , n);
 
-        if (i < j) {
-            swap(&a[i], &a[j]);
-        }
-    } while (i < j);
+       for (i = 0 ; i < n  ; i++)
+       printf("%d " , a[i]);
 
-    swap(&a[l], &a[j]);
-    return j;
-}
-int partition(int a[], int beg, int end)
-{
-int left, right, temp, loc, flag;
-loc = left = beg;
-right = end;
-flag = 0;
-while(flag != 1)
-{
-while((a[loc] <= a[right]) && (loc!=right))
-right--;
-if(loc==right)
-flag =1;
-else if(a[loc]>a[right])
-{
-temp = a[loc];
-a[loc] = a[right];
-a[right] = temp;
-loc = right;
-}
-if(flag!=1)
-{
+getch();
 
-while((a[loc] >= a[left]) && (loc!=left))
-left++;
-if(loc==left)
-flag =1;
-
-else if(a[loc] <a[left])
-{
-temp = a[loc];
-a[loc] = a[left];
-a[left] = temp;
-loc = left;
 
 }
+void swap(int *x , int *y){
+int temp = *x;
+*x = *y;
+*y = temp;
 }
-}
-return loc;
-}
-void quick_sort(int a[], int beg, int end)
-{
-int loc;
-if(beg<end)
-{
-loc = partition(a, beg, end);
-quick_sort(a, beg, loc-1);
-quick_sort(a, loc+1, end);
-}
-}
+
+
+int partition(int a[] , int l , int h ){
+ int pivot  = a[l];
+ int i = l;
+ int j = h;
+ do{
+   do{
+   i++;
+   }while(pivot >=a[i]);
+   do{
+   j--;
+
+   }while(pivot< a[j]);
+   if(i<j){
+   swap(&a[i],&a[j]);
+   }
+
+   }while(i<j);
+
+   swap(&a[l],&a[j]);
+
+   return j ;
+
+   }
+
+
+
+   void quicksort(int a[],int l , int h ){
+   int j ;
+   if(l<h){
+	  j = partition(a,l,h);
+	  quicksort(a,l,j);
+	  quicksort(a,j+1,h);
+	  }
+	  }
+
+
