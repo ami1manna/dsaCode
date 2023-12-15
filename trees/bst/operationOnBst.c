@@ -1,137 +1,143 @@
 #include <stdio.h>
-#include <stdlib.h>
-
+#include <conio.h>
+// Node structure for a BST element
 struct Node {
-    int data ;
-    struct Node *right;
-    struct Node *left;
-
-}*tree;
-
-//creating a bst
-void create_tree(struct Node* );
-struct Node *insertElement(struct Node * , int );
-struct Node *deleteElement(struct Node * , int );
-
-//travesal 
-void preOrderTravesal(struct Node *);
-void postOrderTravesal(struct Node *);
-void inOrderTravesal(struct Node *);
-
-//more operation
-struct Node *findSmallestElement(struct Node *);
-struct Node *findLargestElement(struct Node *);
-struct Node *mirrorImage(struct Node *);
-int totalNodes(struct Node *);
-int totalExternalNodes(struct Node *);
-int totalInternalNodes(struct Node *);
-int Height(struct Node *);
-struct Node *deleteTree(struct Node *);
-
-
-int main(){
-    int option, val;
-struct Node *ptr;
-create_tree(tree);
-clrscr();
-do
-{
-    printf("\n ******MAIN MENU******* \n");
-printf("\n 1. Insert Element");
-printf("\n 2. Preorder Traversal");
-printf("\n 3. Inorder Traversal");
-printf("\n 4. Postorder Traversal");
-printf("\n 5. Find the smallest element");
-printf("\n 6. Find the largest element");
-printf("\n 7. Delete an element");
-printf("\n 8. Count the total number of nodes");
-printf("\n 9. Count the total number of external nodes");
-printf("\n 10. Count the total number of internal nodes");
-printf("\n 11. Determine the height of the tree");
-printf("\n 12. Find the mirror image of the tree");
-printf("\n 13. Delete the tree");
-printf("\n 14. Exit");
-printf("\n\n Enter your option : ");
-scanf("%d", &option);
-switch(option)
-
-{
-
-case 1:
-printf("\n Enter the value of the new node : ");
-scanf("%d", &val);
-tree = insertElement(tree, val);
-break;
-case 2:
-printf("\n The elements of the tree are : \n");
-preorderTraversal(tree);
-break;
-case 3:
-printf("\n The elements of the tree are : \n");
-inorderTraversal(tree);
-break;
-case 4:
-printf("\n The elements of the tree are : \n");
-postorderTraversal(tree);
-break;
-case 5:
-ptr = findSmallestElement(tree);
-printf("\n Smallest element is :%d",ptr->data);
-break;
-case 6:
-ptr = findLargestElement(tree);
-printf("\n Largest element is : %d", ptr->data);
-break;
-case 7:
-printf("\n Enter the element to be deleted : ");
-scanf("%d", &val);
-
-tree = deleteElement(tree, val);
-break;
-case 8:
-printf("\n Total no. of nodes = %d", totalNodes(tree));
-break;
-case 9:
-printf("\n Total no. of external nodes = %d",
-totalExternalNodes(tree));
-break;
-case 10:
-printf("\n Total no. of internal nodes = %d",
-totalInternalNodes(tree));
-break;
-case 11:
-printf("\n The height of the tree = %d",Height(tree));
-break;
-case 12:
-tree = mirrorImage(tree);
-break;
-case 13:
-tree = deleteTree(tree);
-break;
-
-}
-}while(option!=14);
-getch();
-return 0;
-}
-
-// main codes
-
-// create function - ?
- void create_tree(struct Node* tree){
-
-tree = NULL;
-}
- 
- struct Node* insertElement(struct Node* node,int data){
-struct Node* ptr = (struct Node*)malloc(sizeof(struct Node));
-ptr->right = NULL;
-ptr->left = NULL;
-ptr->data = data;
-
-if(tree == NULL){
- 
- }
- else{
+ int data;
+ struct Node* left;
+ struct Node* right;
+};
+// Function to create a new node
+struct Node* createNode(int value) {
+ struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+ if (newNode == NULL) {
+ printf("Memory allocation failed\n");
 
  }
+ newNode->data = value;
+ newNode->left = newNode->right = NULL;
+ return newNode;
+}
+// Function to insert a value into the BST
+struct Node* insert(struct Node* root, int value) {
+ if (root == NULL) {
+ return createNode(value);
+ }
+ if (value < root->data) {
+ root->left = insert(root->left, value);
+ } else if (value > root->data) {
+ root->right = insert(root->right, value);
+ }
+ return root;
+}
+// Function to find the minimum value node in a BST
+struct Node* findMin(struct Node* node) {
+ while (node->left != NULL) {
+ node = node->left;
+ }
+ return node;
+}
+// Function to delete a value from the BST
+struct Node* deleteNode(struct Node* root, int value) {
+ if (root == NULL) {
+ return root;
+ }
+ if (value < root->data) {
+ root->left = deleteNode(root->left, value);
+ } else if (value > root->data) {
+ root->right = deleteNode(root->right, value);
+ } else {
+ // Node with only one child or no child
+ if (root->left == NULL) {
+ struct Node* temp = root->right;
+ free(root);
+ return temp;
+ } else if (root->right == NULL) {
+ struct Node* temp = root->left;
+ free(root);
+ return temp;
+ }
+ // Node with two children: Get the inorder successor (smallest
+ // in the right subtree) and replace the current node's data
+ root->data = findMin(root->right)->data;
+ // Delete the inorder successor
+ root->right = deleteNode(root->right, root->data);
+ }
+ return root;
+}
+// Function to search for a value in the BST
+struct Node* search(struct Node* root, int value) {
+ if (root == NULL || root->data == value) {
+ return root;
+ }
+ if (value < root->data) {
+ return search(root->left, value);
+ } else {
+ return search(root->right, value);
+ }
+}
+// Function to display the elements of the BST in inorder
+void inorderTraversal(struct Node* root) {
+ if (root != NULL) {
+ inorderTraversal(root->left);
+ printf("%d ", root->data);
+ inorderTraversal(root->right);
+ }
+}
+// Function to free the memory allocated for the BST
+void freeBST(struct Node* root) {
+ if (root != NULL) {
+ freeBST(root->left);
+ freeBST(root->right);
+ free(root);
+ }
+}
+struct Node* result;
+int main() {
+ struct Node* root = NULL;
+ int choice, value;
+ do {
+ printf("\nBinary Search Tree (BST) Menu:\n");
+ printf("1. Insert\n");
+ printf("2. Delete\n");
+ printf("3. Search\n");
+ printf("4. Display (Inorder Traversal)\n");
+ printf("5. Exit\n");
+ printf("Enter your choice: ");
+ scanf("%d", &choice);
+ switch (choice) {
+ case 1:
+ printf("Enter the value to insert: ");
+ scanf("%d", &value);
+ root = insert(root, value);
+break;
+ case 2:
+ printf("Enter the value to delete: ");
+ scanf("%d", &value);
+root = deleteNode(root, value);
+ break;
+ case 3:
+ printf("Enter the value to search: ");
+ scanf("%d", &value);
+ result = search(root, value);
+ if (result != NULL) {
+ printf("Value %d found in the BST\n", value);
+ } else {
+ printf("Value %d not found in the BST\n", value);
+ }
+ break;
+ case 4:
+ printf("Inorder Traversal: ");
+ inorderTraversal(root);
+printf("\n");
+ break;
+ case 5:
+ // Free memory and exit
+freeBST(root);
+ printf("Exiting the program.\n");
+ exit(0);
+ default:
+ printf("Invalid choice! Please enter a number between 1 and 5.\n");
+ }
+ } while (1);
+ return 0;
+}
