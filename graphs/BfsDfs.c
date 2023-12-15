@@ -42,18 +42,22 @@ void enqueue(int data) {
     }
     queue[++rear] = data;
 }
-
-int dequeue() {
-    if (front == -1) {
-        printf("Queue Underflow\n");
-        return -1;
-    }
-    int data = queue[front++];
-    if (front > rear) {
-        // Reset queue when empty
-        front = rear = -1;
-    }
-    return data;
+int dequeu()
+{
+int val;
+if(front == -1 || front>rear)
+{
+printf("\n UNDERFLOW");
+return -1;
+}
+else
+{
+val = queue[front];
+front++;
+if(front > rear)
+front = rear = -1;
+return val;
+}
 }
 
 int isQueueEmpty() {
