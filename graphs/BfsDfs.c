@@ -1,145 +1,137 @@
-#include<stdio.h>
-// #include<conio.h>
-#include<stdlib.h>
-#define MAX 100
+#include <stdio.h>
+#include <stdlib.h>
 
-int graph[MAX][MAX];
-int queue[MAX];
-int visited[MAX];
-int front = 0;
+#define MAX_SIZE 100
+
+// Stack implementation using array
+int stack[MAX_SIZE];
+int top = -1;
+
+void push(int data) {
+    if (top == MAX_SIZE - 1) {
+        printf("Stack Overflow\n");
+        return;
+    }
+    stack[++top] = data;
+}
+
+int pop() {
+    if (top == -1) {
+        printf("Stack Underflow\n");
+        return -1;
+    }
+    return stack[top--];
+}
+
+int isStackEmpty() {
+    return top == -1;
+}
+
+// Queue implementation using array
+int queue[MAX_SIZE];
+int front = -1;
 int rear = -1;
-int numOfVertices;
 
-void enqueue(int element)
-{
-  if(rear == MAX - 1)
-    return;
-  queue[++rear] = element;
-}
-
-int dequeue()
-{
-  if(front <= rear)
-	  return queue[front++];
-}
-
-void createGraph()
-{
-  int i, j;
-  // clrscr();
-  printf("\nEnter the number of vertices in graph: ");
-  scanf("%d", &numOfVertices);
-
-  for (i = 0; i < numOfVertices; i++)
-  {
-    // clrscr();
-    printf("\bEnter the Adjacency for vertex %d", i + 1);
-	  for (j = 0; j < numOfVertices; j++)
-    {
-      printf("\n%d -> %d? (1/0): ", i + 1, j + 1);
-      scanf("%d", &graph[i][j]);
+void enqueue(int data) {
+    if (rear == MAX_SIZE - 1) {
+        printf("Queue Overflow\n");
+        return;
     }
-  }
-}
-
-void displayAdjacencyMatrix()
-{
-  int i, j;
-  // clrscr();
-  printf("\nAdjacency Matrix of Graph is: ");
-
-  printf("\n\n  ");
-  for (i = 0; i < numOfVertices; i++)
-    printf("%d ", i + 1);
-  for (i = 0; i < numOfVertices; i++)
-  {
-    printf("\n%d ", i + 1);
-    for (j = 0; j < numOfVertices; j++)
-      printf("%d ", graph[i][j]);
-  }
-}
-
-void bfs(int root)
-{
-  int i, j, k;
-
-  if (--root >= numOfVertices || root < 0)
-	  return;
-
-  for (i = 0; i < numOfVertices; i++)
-	  visited[i] = 0; 
-
-  enqueue(root);
-  visited[root] = 1;
-
-  while(front <= rear)
-  {
-    k = dequeue();
-    printf("%d ", k + 1);
-
-    for (i = 0; i < numOfVertices; i++)
-    {
-      if(graph[k][i] == 1 && visited[i] == 0)
-      {
-        enqueue(i);
-        visited[i] = 1;
-      }
+    if (front == -1) {
+        front = 0;
     }
-  }
+    queue[++rear] = data;
+}
+int dequeu()
+{
+int val;
+if(front == -1 || front>rear)
+{
+printf("\n UNDERFLOW");
+return -1;
+}
+else
+{
+val = queue[front];
+front++;
+if(front > rear)
+front = rear = -1;
+return val;
+}
 }
 
-void dfs(int root)
-{
- 
-int i;
-
-  if (root >= numOfVertices || root < 0 || visited[root])
-    return;
-
-
-  printf("%d ", root+1);
-  visited[root] = 1;
-
-  for (i = 0; i < numOfVertices; i++)
-  {
-    if(graph[root][i] == 1 && visited[i] == 0)
-      dfs(i);
-  }
+int isQueueEmpty() {
+    return front == -1;
 }
 
-int main()
-{
-  int choice, root, i;
-  createGraph();
+void dfs(int graph[MAX_SIZE][MAX_SIZE], int visited[MAX_SIZE], int start, int vertices) {
+    printf("DFS: ");
+    push(start);
+    visited[start] = 1;
 
-  while(1)
-  {
-    displayAdjacencyMatrix();
-    printf("\n---- MENU ----");
-    printf("\n1. BFS\n2. DFS\n3. Exit");
-    printf("\nEnter your choice: ");
-    scanf("%d", &choice);
+    while (!isStackEmpty()) {
+        int current = pop();
+        printf("%d ", current);
 
-    switch(choice)
-    {
-      case 1:
-        printf("\nEnter the starting vertex: ");
-        scanf("%d", &root);
-        bfs(root);
-        break;
-
-      case 2:
-        printf("\nEnter the starting vertex: ");
-        scanf("%d", &root);
-        for (i = 0; i < numOfVertices; i++)
-          visited[i] = 0;
-        dfs(root );
-        break;
-
-      case 3:
-        exit(0);
+        for (int i = 0; i < vertices; ++i) {
+            if (graph[current][i] == 1 && visited[i] == 0) {
+                push(i);
+                visited[i] = 1;
+            }
+        }
     }
-    // getch();
-  }
-  return 0;
+
+    printf("\n");
+}
+
+void bfs(int graph[MAX_SIZE][MAX_SIZE], int visited[MAX_SIZE], int start, int vertices) {
+    printf("BFS: ");
+    enqueue(start);
+    visited[start] = 1;
+
+    while (!isQueueEmpty()) {
+        int current = dequeu();
+        printf("%d ", current);
+
+        for (int i = 0; i < vertices; ++i) {
+            if (graph[current][i] == 1 && visited[i] == 0) {
+                enqueue(i);
+                visited[i] = 1;
+            }
+        }
+    }
+
+    printf("\n");
+}
+
+int main() {
+    int vertices, edges;
+    printf("Enter the number of vertices and edges: ");
+    scanf("%d %d", &vertices, &edges);
+
+    int graph[MAX_SIZE][MAX_SIZE] = {0};
+    int visited[MAX_SIZE] = {0};
+
+    printf("Enter the edges (vertex pairs):\n");
+    for (int i = 0; i < edges; ++i) {
+        int u, v;
+        scanf("%d %d", &u, &v);
+        graph[u][v] = 1;
+        graph[v][u] = 1; // For undirected graph
+    }
+
+    int startVertex;
+    printf("Enter the starting vertex: ");
+    scanf("%d", &startVertex);
+
+    dfs(graph, visited, startVertex, vertices);
+
+    // Reset visited array
+    for (int i = 0; i < MAX_SIZE; ++i) {
+        visited[i] = 0;
+    }
+
+    bfs(graph, visited, startVertex, vertices);
+
+    return 0;
 }
