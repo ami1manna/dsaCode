@@ -1,0 +1,154 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#define MAX 100
+
+char stack[MAX];
+char infix[MAX], prefix[MAX];
+int top = -1;
+
+// Function to check if the stack is empty
+int isEmpty() {
+    if (top == -1)
+        return 1;
+    else
+        return 0;
+}
+
+// Function to push a character onto the stack
+void push(char d) {
+    if (top == MAX - 1) {
+        printf("Stack is full");
+    } else {
+        stack[++top] = d;
+    }
+}
+
+// Function to pop a character from the stack
+char pop() {
+    if (isEmpty()) {
+        printf("Stack is empty");
+        return '\0'; // Return a special character or handle empty stack accordingly
+    } else {
+        return stack[top--];
+    }
+}
+
+// Function to determine precedence of operators
+int precedence(char symbol) {
+    switch (symbol) {
+        case '^':
+            return 3;
+        case '/':
+        case '*':
+            return 2;
+        case '+':
+        case '-':
+            return 1;
+        default:
+            return 0;
+    }
+}
+
+// Function to reverse a string
+void reverseString(char str[]) {
+    int length = strlen(str);
+    int i, j;
+    char temp;
+
+    for (i = 0, j = length - 1; i < j; i++, j--) {
+        temp = str[i];
+        str[i] = str[j];
+        str[j] = temp;
+    }
+}
+
+// Function to convert infix to prefix
+void inToPre() {
+    int i, j = 0;
+    char symbol, next;
+    reverseString(infix);//-----
+
+    for (i = 0; i < strlen(infix); i++) {
+        symbol = infix[i];
+
+        switch (symbol) {
+            case ')'://-----
+                push(symbol);
+                break;
+
+            case '('://--------
+                while ((next = pop()) != ')')
+                    prefix[j++] = next;
+                break;
+
+            case '+':
+            case '-':
+            case '*':
+            case '/':
+            case '^':
+                while (!isEmpty() && precedence(stack[top]) > precedence(symbol)) //--------------
+                    prefix[j++] = pop();
+                push(symbol);
+                break;
+
+            default:
+                // For operands
+                prefix[j++] = symbol;
+        }
+    }
+
+    while (!isEmpty())
+        prefix[j++] = pop();
+
+    prefix[j] = '\0';
+    reverseString(prefix);  // -----------
+}
+
+// Function to evaluate a prefix expression
+int evaluatePrefix(char prefix[]) {
+    int i, operand, op1, op2;
+
+    for (i = strlen(prefix)-1; i >=0; i--) { //ch --------------
+        if (isdigit(prefix[i])) {
+            operand = prefix[i] - '0';
+            push(operand);
+        } else {
+            op1 = pop();
+            op2 = pop();
+
+            switch (prefix[i]) {
+                case '+':
+                    push(op1 + op2);
+                    break;
+                case '-':
+                    push(op1 - op2);
+                    break;
+                case '*':
+                    push(op1 * op2);
+                    break;
+                case '/':
+                    push(op1 / op2);
+                    break;
+                case '^':
+                    push(op1 ^ op2);
+                    break;
+            }
+        }
+    }
+
+    return pop();
+}
+
+int main() {
+    printf("Enter the infix Expression:");
+    scanf("%s", infix);
+
+    inToPre();
+    printf("Prefix expression: %s\n", prefix);
+
+    int result = evaluatePrefix(prefix);
+    printf("Result after evaluation: %d\n", result);
+
+    return 0;
+}
